@@ -22,6 +22,7 @@ const navArrows = document.querySelectorAll('.arrowNav>i')
 const leftSide = document.querySelector('.leftSide')
 
 const divPjNames = document.querySelectorAll('.pjName')
+const seeProject = document.querySelectorAll('.viewProject>h1')
 
 const hearts = document.querySelectorAll('.heart>i')
 
@@ -31,25 +32,27 @@ const skills = document.querySelectorAll('.skill')
 const overflowElem = document.querySelectorAll('.rightSide>*')
 var numbSorted = []
 
+
 const resetScrollTab = [window, document.querySelector('.projectContainer'), document.querySelectorAll('.formaContent')]
+
 window.addEventListener('DOMContentLoaded', function(){
     /* -- LOADER ---*/
+    setTimeout(() => {
+        alert("Mon site est toujours en développement, il n'est donc pas fini \n il manque encore des fonctionnalités et du contenu \n La version finale sera disponible le 1er avril")
+    }, 10000);
+    videoLoad.addEventListener('loadeddata', function(){
+        loaderHead.classList.add('appearLoader')
+        loader.style.width="100%"
+        body.style.overflow="hidden"
         setTimeout(() => {
-            alert("Mon site est toujours en développement, il n'est donc pas fini \n il manque encore des fonctionnalités et du contenu \n La version finale sera disponible le 1er avril")
-        }, 5000);
-        videoLoad.addEventListener('loadeddata', function(){
-            loaderHead.classList.add('appearLoader')
-            loader.style.width="100%"
-            body.style.overflow="hidden"
+            containerLoader.classList.add('loaded')
+            body.style.overflow="unset"
+    
             setTimeout(() => {
-                containerLoader.classList.add('loaded')
-                body.style.overflow="unset"
-
-                setTimeout(() => {
-                    containerLoader.style.display="none"
-                }, 500);
-            }, 2800);
-        })
+                containerLoader.style.display="none"
+            }, 500);
+        }, 2800);
+    })
     rightSides[0].classList.add('active')
     navContentElem[0].style.backgroundColor="#1797d9"
     mobileNavButtons[0].setAttribute('disabled', 'true')
@@ -178,6 +181,34 @@ window.addEventListener('DOMContentLoaded', function(){
         // centrage sur le bottom des cardProject
         divPjName.style.bottom = -parseInt(getComputedStyle(divPjName).height)/2 + "px"
     })
+    var older = null
+    // reset des classes lors des cliques sur des projets différents
+    seeProject.forEach(seeP =>{
+        seeP.addEventListener('click', function(e){
+            e.preventDefault()
+            seeP.classList.add('active')
+            seeP.nextElementSibling.classList.add('active')
+            older = seeP
+
+            seeProject.forEach(elm =>{
+                if(elm != seeP && elm.classList.contains('active')){
+                    elm.classList.remove("active")
+                    elm.nextElementSibling.classList.remove('active')
+                    elm.nextElementSibling.style.transitionDelay="0ms"
+                    elm.style.transitionDelay="500ms"
+                    
+                    setTimeout(() => {
+                        elm.nextElementSibling.style.transitionDelay=""
+                        elm.style.transitionDelay=""
+                        elm.nextElementSibling.style.transitionDuration=""
+                    }, 300);
+                }
+            })
+            
+        })
+
+        
+    })
 
     //AFFICHAGE DES BACKGROUDNCOLOR des skills ALÉATOIREMENT depuis mon tableau
     const lvl = document.querySelector('.bottomPart>.flyover>h2')
@@ -189,7 +220,7 @@ window.addEventListener('DOMContentLoaded', function(){
             animLVL(skill, lvl)
         skill.addEventListener('mouseleave', function(){
             lvl.classList.remove('active')
-            const overme = document.querySelector('.flyover>h3')
+            const overme = document.querySelector('.flyover>h4')
             overme.classList.remove('active')
         })
     })
@@ -243,13 +274,44 @@ window.addEventListener('DOMContentLoaded', function(){
             
         })
     })
-
+    //animtion click like
     hearts.forEach(heart =>{
         heart.addEventListener('click', function(){
             animHeart(heart)
         })
 
     })
+
+
+    const formaArrow = document.querySelector('.formaContainer>i')
+    var arrowFClick = 0, arrowEClick = 0
+    const expArrow =  document.querySelector('.expContainer>i') 
+    const titleHeadsForma = document.querySelectorAll(".formaContainer>.formaContent>.titleHead")
+    const titleHeadsExp = document.querySelectorAll(".expContainer>.formaContent>.titleHead")
+
+    formaArrow.addEventListener('click', function(e){
+        e.preventDefault()
+        arrowFClick++
+        if(arrowFClick <= titleHeadsForma.length-1){
+            titleHeadsForma[arrowFClick].scrollIntoView({ behavior: 'smooth' });
+        }
+        else{
+            arrowFClick = 0
+            titleHeadsForma[arrowFClick].scrollIntoView({ behavior: 'smooth' });       
+        } 
+    })
+
+    expArrow.addEventListener('click', function(){
+        arrowEClick++
+        if(arrowEClick <= titleHeadsExp.length-1){
+            titleHeadsExp[arrowEClick].scrollIntoView({ behavior: 'smooth' });
+        }
+        else{
+            arrowEClick = 0
+            titleHeadsExp[arrowEClick].scrollIntoView({ behavior: 'smooth' });       
+        } 
+    })
+
 
 })
 window.addEventListener('resize', function(){
@@ -356,7 +418,6 @@ function setActiveRightSide(rightSides, target){
 function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
 }
-
 function sidebarAppear(){
     leftSide.classList.toggle('active')
     body.style.overflow="hidden"
@@ -383,7 +444,6 @@ function setActiveIconNavMobile(current){
     current.classList.add('active')
     })
 }
-
 function animLVL(skill, lvl){
 
     switch (skill.getAttribute('value')){
@@ -416,19 +476,40 @@ function animLVL(skill, lvl){
     }
     lvl.style.color = getComputedStyle(skill).backgroundColor
     lvl.classList.add('active')
-    const overme = document.querySelector('.flyover>h3')
+    const overme = document.querySelector('.flyover>h4')
     overme.classList.add('active')
 }
-
 function animHeart(heart){
     if(heart.classList.contains('liked')){
         heart.classList.remove('active')
         heart.nextElementSibling.classList.add('active')
+        addFav();
         
     }
     else{
         heart.classList.remove('active')
         heart.previousElementSibling.classList.add('active')  
+        removeFav()
     }
 
 }
+function addFav() {
+    var xhttp = new XMLHttpRequest(); 
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+       console.log(xhttp.responseText)
+      }
+    };
+    xhttp.open("GET", "https://antoinepauthier.fr/php/favorite.php?addFav=true",true);
+    xhttp.send();
+  }
+function removeFav() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+       console.log(xhttp.responseText)
+      }
+    };
+    xhttp.open("GET", "https://antoinepauthier.fr/php/favorite.php?addFav=false", true);
+    xhttp.send();
+  }

@@ -6,16 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/41b0df0c75.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="./css/style.css">
+    <link rel="icon" type="image/png" href="./img/icons/favicon.png" />
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;800&display=swap" rel="stylesheet">
+    <script src="./js/smoothscroll.js"></script>
     <script defer src="./js/script.js"></script>
     <title>Antoine Pauthier | Portefollio</title>
 </head>
 <?php 
 
-    function test(){
-        echo "hello pute";
-    }
     include './php/database.php';
     $querie = "SELECT * FROM projects ORDER BY pj_date DESC";
     error_reporting(E_ALL);
@@ -46,6 +45,11 @@
     while($row = $result->fetch_assoc()){
         array_push($expInfo, $row);
     }
+
+    $result = $conn->query("SELECT COUNT(*) as nbrFav FROM likes");
+    $nbrFav = $result->fetch_object();
+
+    $index = 0
 ?>
 
 <body>
@@ -70,7 +74,7 @@
                 <div class="networkLinks">
                     <ul class="listNetwork">
                         <li>
-                            <a href="https://github.com/antoinePhr" onclick="<?= test() ?>" target="_blank" rel="noopener noreferrer">
+                            <a href="https://github.com/antoinePhr" target="_blank" rel="noopener noreferrer">
                                 <i class="fab fa-github fa-2x"></i>
                             </a> 
                         </li>
@@ -104,7 +108,7 @@
                     </button>
                     <div class="heart">
                         <i class="far fa-heart fa-1x liked active"></i>
-                        <i class="fas fa-heart fa-1x "></i>
+                        <i class="fas fa-heart fa-1x "><p class="nbrFav"><?=(int)$nbrFav->nbrFav + 1?></p></i>           
                     </div>
                 </div>  
             </div>
@@ -193,8 +197,23 @@
                                     <div class="blackFilter"></div>
                                     <div class="viewProject">
                                         <h1><a href="#">voir le projet</a> </h1>
+                                        <div class="pjInfoContainer">
+                                            <div class="pjInfo">
+                                                <a href="<?= $projet['pj_link_git'] ?>" target="_blank" rel="noopener noreferrer">
+                                                    <i class="fab fa-github fa-3x"></i>
+                                                    <p>github</p>     
+                                                </a>
+                                                <a href="<?= $projet['pj_link_real'] ?>" target="_blank" rel="noopener noreferrer">
+                                                    <i class="fas fa-globe fa-3x"></i>
+                                                    <p>site</p>
+                                                </a>
+                                            </div>
+                                            <p>langages : <span><?= $projet['pj_tags'] ?></span></p>
+                                            <p>status : <span><?= (int)$projet['pj_status'] ? "terminé" : "en cours" ?></span></p>
+                                            <p>type : <span><?= $projet['pj_type'] ?></span></p>
+                                        </div>
+                                       
                                     </div>
-
                                     <div class="pjName">
                                         <h3><?= $projet['pj_nom'] ?></h3>
                                     </div>
@@ -216,22 +235,24 @@
                                             <i class="fas fa-graduation-cap fa-3x"></i>
                                             <h1>formation</h1>
                                         </div>
-                                        <div class="formaContent">
-                                        <?php foreach ($formaInfo as $info): ?>
-                                            <div class="titleHead">
-                                               <h3><?= $info['fm_nom'] ?></h3>
-                                               <p class="loc">
-                                                    <i class="fas fa-map-marker-alt"></i>
-                                                    <?=$info['fm_loc']?>
-                                                </p> 
-                                            </div>
-                                            
-                                            <p>ecole : <span><?= $info['fm_nomEtablissement'] ?> </span></p>
-                                            <p class="description"> <?= $info['fm_description']?></p>
+                                        <div class="formaContainer">
+                                            <i class="fas fa-chevron-left"></i>
+                                            <div class="formaContent">
+                                                <?php foreach ($formaInfo as $info): ?>
+                                                    <div id="f<?= $index++ ?>" class="titleHead">
+                                                    <h3><?= $info['fm_nom'] ?></h3>
+                                                    <p class="loc">
+                                                            <i class="fas fa-map-marker-alt"></i>
+                                                            <?=$info['fm_loc']?>
+                                                        </p> 
+                                                    </div>                                                   
+                                                    <p>ecole : <span><?= $info['fm_nomEtablissement'] ?> </span></p>
+                                                    <p class="description"> <?= $info['fm_description']?></p>
 
-                                            <p class="matiere">matières principales : <span><?= $info['fm_matiere'] ?></span></p>
-                                            <hr>
-                                        <?php endforeach ?>
+                                                    <p class="matiere">matières principales : <span><?= $info['fm_matiere'] ?></span></p>
+                                                    <hr>
+                                                <?php endforeach ?>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="experience">
@@ -239,29 +260,32 @@
                                             <i class="fas fa-briefcase fa-3x"></i>
                                             <h1>expérience</h1>
                                         </div>
-                                        <div class="formaContent">
-                                        <?php foreach ($expInfo as $exp): ?>
-                                            <div class="titleHead">
-                                                <h3><?= $exp['exp_intitule'] ?></h3>
-                                               <p class="loc">
-                                                    <i class="fas fa-map-marker-alt"></i>
-                                                    <?=$exp['exp_loc']?>
-                                                </p> 
+                                        <div class="expContainer">
+                                            <i class="fas fa-chevron-left"></i>
+                                            <div class="formaContent">    
+                                                <?php foreach ($expInfo as $exp): ?>
+                                                    <div id="f<?= $index++ ?>" class="titleHead">
+                                                        <h3><?= $exp['exp_intitule'] ?></h3>
+                                                    <p class="loc">
+                                                            <i class="fas fa-map-marker-alt"></i>
+                                                            <?=$exp['exp_loc']?>
+                                                        </p> 
+                                                    </div>
+                                                    <p>Entreprise : <span><?= $exp['exp_entreprise'] ?> </span></p>
+                                                    <p class="periode"><?= $exp['exp_periode']?></p>
+                                                    <p class="description"> <?= $exp['exp_description']?></p>
+                                                    <?php if($exp['exp_language'] != null): ?>
+                                                        <p class="matiere">Langages : <span><?= $exp['exp_language'] ?></span></p>
+                                                    <?php endif ?>
+                                                <?php endforeach ?>
                                             </div>
-                                            <p>Entreprise : <span><?= $exp['exp_entreprise'] ?> </span></p>
-                                            <p class="periode"><?= $exp['exp_periode']?></p>
-                                            <p class="description"> <?= $exp['exp_description']?></p>
-                                            <?php if($exp['exp_language'] != null): ?>
-                                                <p class="matiere">Langages : <span><?= $exp['exp_language'] ?></span></p>
-                                            <?php endif ?>
-                                            <?php endforeach ?>
                                         </div>
-                                    </div>
+                                    </div> 
                                 </div>
                                 <div class="bottomPart">
                                     <h1>compétences</h1>
                                     <div class="flyover">
-                                        <h3>over skills</h3>
+                                        <h4>over skills</h4>
                                         <h2>intermédiaire</h2>
                                     </div>
 
