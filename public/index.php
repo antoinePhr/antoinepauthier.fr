@@ -14,7 +14,6 @@
     <title>Antoine Pauthier | Portefollio</title>
 </head>
 <?php 
-
     include './php/database.php';
     $querie = "SELECT * FROM projects ORDER BY pj_date DESC";
     error_reporting(E_ALL);
@@ -107,8 +106,13 @@
                         </a>      
                     </button>
                     <div class="heart">
+                        <?php if(isset($_COOKIE['liked']) && $_COOKIE['liked'] == "true"): ?>
+                            <i class="far fa-heart fa-1x liked"></i>
+                            <i class="fas fa-heart fa-1x active "><p class="nbrFav"><?=(int)$nbrFav->nbrFav + 1?></p></i>   
+                        <?php else:?>
                         <i class="far fa-heart fa-1x liked active"></i>
-                        <i class="fas fa-heart fa-1x "><p class="nbrFav"><?=(int)$nbrFav->nbrFav + 1?></p></i>           
+                        <i class="fas fa-heart fa-1x "><p class="nbrFav"><?=(int)$nbrFav->nbrFav + 1?></p></i>  
+                        <?php endif; ?>         
                     </div>
                 </div>  
             </div>

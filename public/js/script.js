@@ -37,9 +37,6 @@ const resetScrollTab = [window, document.querySelector('.projectContainer'), doc
 
 window.addEventListener('DOMContentLoaded', function(){
     /* -- LOADER ---*/
-    setTimeout(() => {
-        alert("Mon site est toujours en développement, il n'est donc pas fini \n il manque encore des fonctionnalités et du contenu \n La version finale sera disponible le 1er avril")
-    }, 10000);
     videoLoad.addEventListener('loadeddata', function(){
         loaderHead.classList.add('appearLoader')
         loader.style.width="100%"
