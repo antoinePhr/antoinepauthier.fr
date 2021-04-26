@@ -26,9 +26,12 @@ const seeProject = document.querySelectorAll('.viewProject>h1')
 
 const hearts = document.querySelectorAll('.heart>i')
 
-const colors = ["#FEAB0F", "#0E8BCD", "#FEBC10", "#FB0A69", "#FE624C", "#F04641"]
+const colors = [
+    "#FEAB0F", "#0E8BCD", "#FEBC10", "#FB0A69", "#FE624C", "#F04641",
+    "#5EACF0", "#F5B91C", "#F5541C", "#A02AF7", "#2361DC", "#6423EF"
+]
 const skills = document.querySelectorAll('.skill')
-
+console.log(skills)
 const overflowElem = document.querySelectorAll('.rightSide>*')
 var numbSorted = []
 
@@ -208,29 +211,42 @@ window.addEventListener('DOMContentLoaded', function(){
     })
 
     //AFFICHAGE DES BACKGROUDNCOLOR des skills ALÉATOIREMENT depuis mon tableau
-    const lvl = document.querySelector('.bottomPart>.flyover>h2')
     skills.forEach(skill =>{
         var numb = getRandomInt(colors.length-1)
         skill.style.backgroundColor = colors[numb] 
         colors.splice(numb, 1)  
         skill.addEventListener('mouseenter', function(){
+            if(skill.getAttribute('type') == "soft")
+                var lvl = document.querySelectorAll('.bottomPart>.flyover>h2')[1]        
+            else
+                var lvl = document.querySelectorAll('.bottomPart>.flyover>h2')[0]
+               
+            
             animLVL(skill, lvl)
-        skill.addEventListener('mouseleave', function(){
-            lvl.classList.remove('active')
-            const overme = document.querySelector('.flyover>h4')
-            overme.classList.remove('active')
+            skill.addEventListener('mouseleave', function(){
+                if(skill.getAttribute('type') == "soft")
+                    var overme = document.querySelectorAll('.flyover>h4')[1] 
+                else
+                    var overme = document.querySelectorAll('.flyover>h4')[0]
+                
+                lvl.classList.remove('active')
+                overme.classList.remove('active')
+            })
         })
-    })
+       
 })
     navLabel.addEventListener('click', function(){
         navLabel.classList.toggle('active')
         navCont.classList.toggle('active')
-        setTimeout(() => {
-            navContentElem.forEach(elem => {
-                elem.classList.toggle('bump')
-            })      
-        }, 300); 
+        if(navLabel.classList.contains('active')){
+            setTimeout(() => {
+                navContentElem.forEach(elem => {
+                    elem.classList.toggle('bump')
+                })      
+            }, 300);
+        }
     })
+        
 
 
     //nav pc
@@ -287,28 +303,27 @@ window.addEventListener('DOMContentLoaded', function(){
     const titleHeadsExp = document.querySelectorAll(".expContainer>.formaContent>.titleHead")
 
     formaArrow.addEventListener('click', function(e){
-        e.preventDefault()
         arrowFClick++
         if(arrowFClick <= titleHeadsForma.length-1){
-            titleHeadsForma[arrowFClick].scrollIntoView({ behavior: 'smooth' });
+            titleHeadsForma[arrowFClick].parentNode.scroll({left: 0, top: titleHeadsForma[arrowFClick].offsetTop, behavior: 'smooth' });
+            
         }
         else{
             arrowFClick = 0
-            titleHeadsForma[arrowFClick].scrollIntoView({ behavior: 'smooth' });       
+            titleHeadsForma[arrowFClick].parentNode.scroll({left: 0, top: titleHeadsForma[arrowFClick].offsetTop, behavior: 'smooth' });
         } 
     })
 
     expArrow.addEventListener('click', function(){
         arrowEClick++
         if(arrowEClick <= titleHeadsExp.length-1){
-            titleHeadsExp[arrowEClick].scrollIntoView({ behavior: 'smooth' });
+            titleHeadsExp[arrowEClick].parentNode.scroll({left: 0, top: titleHeadsExp[arrowEClick].offsetTop, behavior: 'smooth'})
         }
         else{
             arrowEClick = 0
-            titleHeadsExp[arrowEClick].scrollIntoView({ behavior: 'smooth' });       
+            titleHeadsExp[arrowEClick].parentNode.scroll({left: 0, top: titleHeadsExp[arrowEClick].offsetTop, behavior: 'smooth'})
         } 
     })
-
 
 })
 window.addEventListener('resize', function(){
@@ -378,6 +393,7 @@ function resetScroll(elems = []){
     @param1 : tableau slides
     @param2 : attribut "value"
 */ 
+
 function setActiveRightSide(rightSides, target){
    rightSides.forEach(rightSide =>{
         if(rightSide.getAttribute('value') != target){
@@ -467,15 +483,29 @@ function animLVL(skill, lvl){
         case "mysql":
             lvl.innerHTML = "intermédiaire"
             break;
-    
+        case "reactjs":
+            lvl.innerHTML = "débutant"
+            break;
+        case "c++":
+            lvl.innerHTML = "intermédiaire"
+            break;
+        case 'figma':
+            lvl.innerHTML = "intermédiaire" 
         default:
             break;
     }
     lvl.style.color = getComputedStyle(skill).backgroundColor
     lvl.classList.add('active')
-    const overme = document.querySelector('.flyover>h4')
+    if(skill.getAttribute('type') == "soft")
+        var overme = document.querySelectorAll('.flyover>h4')[1] 
+    else
+        var overme = document.querySelectorAll('.flyover>h4')[0]
     overme.classList.add('active')
 }
+
+
+
+
 function animHeart(heart){
     if(heart.classList.contains('liked')){
         heart.classList.remove('active')
